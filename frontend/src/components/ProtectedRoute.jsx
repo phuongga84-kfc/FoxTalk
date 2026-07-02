@@ -5,7 +5,7 @@ import { Spin } from 'antd';
 
 const ProtectedRoute = () => {
     const authStore = useAuthStore()
-    const { accessToken, user, loading } = authStore
+    const { accessToken, user, loading, refresh, fetchMe } = authStore
     const [starting, setStarting] = useState(true)
 
     const init = async () => {

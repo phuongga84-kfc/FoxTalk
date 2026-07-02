@@ -87,7 +87,7 @@ const SignUpPage = () => {
                             <Col xs={24} sm={12}>
                                 <Form.Item
                                     label="Họ"
-                                    name="firstName"
+                                    name="firstname"
                                     rules={[
                                         {
                                             required: true,
@@ -104,7 +104,7 @@ const SignUpPage = () => {
                             <Col xs={24} sm={12}>
                                 <Form.Item
                                     label="Tên"
-                                    name="lastName"
+                                    name="lastname"
                                     rules={[
                                         {
                                             required: true,
