@@ -53,7 +53,7 @@
 body {
   margin: 0;
 }
-
+/* 
 #root {
   width: 1126px;
   max-width: 100%;
@@ -64,7 +64,7 @@ body {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-}
+} */
 
 h1,
 h2 {

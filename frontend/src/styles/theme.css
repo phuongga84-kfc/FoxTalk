@@ -1,0 +1,117 @@
+:root{
+
+    /* ===== Main Color ===== */
+
+    --primary: #ff6a00;
+    --primary-hover: #ff8124;
+    --primary-active: #e95d00;
+
+    /* Gradient */
+
+    --primary-gradient: linear-gradient(
+        90deg,
+        #ff7b22 0%,
+        #ff6a00 50%,
+        #ff5a00 100%
+    );
+
+    /* Background */
+
+    --bg: #f8f9fb;
+    --card-bg: #ffffff;
+
+    /* Text */
+
+    --text: #222;
+    --text-light: #777;
+
+    /* Border */
+
+    --border: #e5e7eb;
+
+    /* Shadow */
+
+    --shadow: 0 15px 40px rgba(0,0,0,.08);
+
+    /* Radius */
+
+    --radius:12px;
+
+}.signup-btn{
+    width:100%;
+    height:52px;
+
+    background:var(--primary-gradient);
+
+    border:none;
+    border-radius:var(--radius);
+
+    color:#fff;
+    font-size:17px;
+    font-weight:600;
+
+    transition:.25s;
+    cursor:pointer;
+}
+
+.signup-btn:hover{
+
+    transform:translateY(-2px);
+
+    background:var(--primary-hover);
+
+    box-shadow:0 8px 20px rgba(255,106,0,.35);
+
+}
+
+.signup-btn:active{
+
+    background:var(--primary-active);
+
+}
+.ant-input:focus,
+.ant-input-focused,
+.ant-input-affix-wrapper-focused{
+
+    border-color:var(--primary)!important;
+
+    box-shadow:0 0 0 3px rgba(255,106,0,.15)!important;
+
+}
+
+.signin-link a{
+
+    color:var(--primary);
+
+    font-weight:600;
+
+}
+
+.signin-link a:hover{
+
+    color:var(--primary-hover);
+
+}
+.ant-divider-inner-text{
+
+    color:var(--text-light);
+
+    font-weight:600;
+
+}
+.google-btn{
+
+    border-radius:var(--radius);
+
+    height:50px;
+
+    transition:.25s;
+
+}
+
+.google-btn:hover{
+
+    border-color:var(--primary)!important;
+    color:var(--primary)!important;
+
+}
