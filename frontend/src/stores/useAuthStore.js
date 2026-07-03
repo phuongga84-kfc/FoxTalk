@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { toast } from "sonner";
 import { authService } from "../services/authServices.js";
+import { useChatStore } from "./useChatStore.js";
 
 const getErrorMessage = (error, fallback) => {
   const backendMessage =
@@ -50,6 +51,9 @@ export const useAuthStore = create(
         try {
           set({ loading: true });
 
+          localStorage.clear()
+          useChatStore.getState().reset()
+
           const { accessToken, message } = await authService.signIn(
             username,
             password,
@@ -58,6 +62,8 @@ export const useAuthStore = create(
           get().setAccessToken(accessToken);
 
           await get().fetchMe();
+          useChatStore.getState().fetchConversations()
+
 
           toast.success(message || "Đăng nhập thành công!");
           return true;
@@ -67,6 +73,12 @@ export const useAuthStore = create(
           return false;
         } finally {
           set({ loading: false });
+
+          clearState: () => {
+            set({accessToken: null, user: null, loading: false})
+            localStorage.clear()
+            useChatStore.getState().reset()
+          }
         }
       },
       signOut: async () => {

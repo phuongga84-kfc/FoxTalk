@@ -100,7 +100,7 @@ export const getConversations = async (req, res) => {
       }));
       return {
         ...convo.toObject(),
-        unreadCount: convo.unreadCounts || {},
+        unreadCounts: convo.unreadCounts || {},
         participants,
       };
     });

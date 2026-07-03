@@ -1,34 +1,29 @@
-import React from 'react'
-import { Button } from 'antd'
-import { useAuthStore } from '../stores/useAuthStore'
-import { useNavigate } from 'react-router'
+import { Button } from "@/components/ui/button";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { LogOut } from "lucide-react";
+import { useNavigate } from "react-router";
 
 const Logout = () => {
-    const { signOut } = useAuthStore()
-    const navigate = useNavigate()
-
-    const handleLogout = async () => {
-        try {
-            await signOut()
-        } catch (error) {
-            console.error(error)
-        } finally {
-            navigate('/signin')
-        }
+  const { signOut } = useAuthStore();
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      navigate("/signin");
+    } catch (error) {
+      console.error(error);
     }
+  };
 
-    return (
-        <div style={{ padding: 24 }}>
-            <Button
-                type="primary"
-                danger
-                onClick={handleLogout}
-                style={{ minWidth: 140 }}
-            >
-                Đăng xuất
-            </Button>
-        </div>
-    )
-}
+  return (
+    <Button
+      variant="completeGhost"
+      onClick={handleLogout}
+    >
+      <LogOut className="text-destructive" />
+      Log out
+    </Button>
+  );
+};
 
-export default Logout
+export default Logout;
