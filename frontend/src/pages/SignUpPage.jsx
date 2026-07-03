@@ -1,4 +1,3 @@
-import "../styles/theme.css"
 import "../styles/signUpPage.css";
 import React from 'react'
 import {
