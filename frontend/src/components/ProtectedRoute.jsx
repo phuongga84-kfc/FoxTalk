@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useAuthStore } from '../stores/useAuthStore.js'
+import { useAuthStore } from '../stores/useAuthStore'
 import { Navigate, Outlet } from 'react-router'
 import { Spin } from 'antd';
 

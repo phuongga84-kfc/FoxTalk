@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { toast } from "sonner";
 import { authService } from "../services/authServices.js";
-import { useChatStore } from "./useChatStore.js";
+import { useChatStore } from "./useChatStore";
 
 const getErrorMessage = (error, fallback) => {
   const backendMessage =
