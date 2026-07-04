@@ -7,11 +7,13 @@ import UserAvatar from "./UserAvatar";
 import StatusBadge from "./StatusBadge";
 import GroupChatAvatar from "./GroupChatAvatar";
 import { useSocketStore } from "@/stores/useSocketStore";
+import { useProfileStore } from "@/stores/useProfileStore";
 
 const ChatWindowHeader = ({ chat }: { chat?: Conversation }) => {
   const { conversations, activeConversationId } = useChatStore();
   const { user } = useAuthStore();
   const { onlineUsers } = useSocketStore();
+  const { openProfile } = useProfileStore();
 
   let otherUser;
 
@@ -41,7 +43,14 @@ const ChatWindowHeader = ({ chat }: { chat?: Conversation }) => {
           className="mr-2 data-[orientation=vertical]:h-4"
         />
 
-        <div className="p-2 w-full flex items-center gap-3">
+        <div
+          className="p-2 w-full flex items-center gap-3 cursor-pointer rounded-lg hover:bg-accent transition-colors"
+          onClick={() => {
+            if (chat.type === "direct" && otherUser) {
+              openProfile(otherUser);
+            }
+          }}
+        >
           {/* avatar */}
           <div className="relative">
             {chat.type === "direct" ? (
@@ -54,7 +63,9 @@ const ChatWindowHeader = ({ chat }: { chat?: Conversation }) => {
                 {/* todo: socket io */}
                 <StatusBadge
                   status={
-                    onlineUsers.includes(otherUser?._id ?? "") ? "online" : "offline"
+                    onlineUsers.includes(otherUser?._id ?? "")
+                      ? "online"
+                      : "offline"
                   }
                 />
               </>
