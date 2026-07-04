@@ -65,3 +65,54 @@ export const uploadAvatar = async (req, res) => {
     return res.status(500).json({ message: "Upload failed" });
   }
 };
+
+export const updateProfile = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const {
+      displayName,
+      username,
+      bio,
+      phone,
+    } = req.body;
+
+    // username không được trùng
+    if (username) {
+      const existed = await User.findOne({
+        username,
+        _id: { $ne: userId },
+      });
+
+      if (existed) {
+        return res.status(400).json({
+          message: "Tên người dùng đã tồn tại",
+        });
+      }
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        displayName,
+        username,
+        bio,
+        phone,
+      },
+      {
+        new: true,
+      }
+    );
+
+    res.json({
+      message: "Cập nhật thành công",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Lỗi hệ thống",
+    });
+  }
+};

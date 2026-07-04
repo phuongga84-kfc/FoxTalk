@@ -12,4 +12,10 @@ export const userService = {
 
     return res.data;
   },
+  updateProfile: async (data) => {
+    const res = await api.put("/users/profile", data);
+
+    return res.data;
+}
 };
+

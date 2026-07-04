@@ -26,9 +26,9 @@ const SignUpPage = () => {
     const { signUp } = useAuthStore()
     const navigate = useNavigate()
     const onFinish = async (data) => {
-        const { firstname, lastname, username, email, password } = data
+        const { firstName, lastName, username, email, password } = data
 
-        const success = await signUp(firstname, lastname, username, email, password)
+        const success = await signUp(firstName, lastName, username, email, password)
 
         if (success) {
             navigate("/signin")
@@ -86,7 +86,7 @@ const SignUpPage = () => {
                             <Col xs={24} sm={12}>
                                 <Form.Item
                                     label="Họ"
-                                    name="firstname"
+                                    name="firstName"
                                     rules={[
                                         {
                                             required: true,
@@ -103,7 +103,7 @@ const SignUpPage = () => {
                             <Col xs={24} sm={12}>
                                 <Form.Item
                                     label="Tên"
-                                    name="lastname"
+                                    name="lastName"
                                     rules={[
                                         {
                                             required: true,

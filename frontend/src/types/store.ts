@@ -93,4 +93,12 @@ export interface FriendState {
 
 export interface UserState {
   updateAvatarUrl: (formData: FormData) => Promise<void>;
+
+  updateProfile: (data: {
+    displayName: string;
+    username: string;
+    email: string;
+    phone: string;
+    bio: string;
+  }) => Promise<boolean>;
 }
