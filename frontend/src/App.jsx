@@ -1,33 +1,57 @@
-import {BrowserRouter, Route, Routes} from 'react-router'
-import SignInPage from './pages/SignInPage.jsx'
-import SignUpPage from './pages/SignUpPage.jsx'
-import ChatAppPage from './pages/ChatAppPage.tsx'
+import { BrowserRouter, Route, Routes } from "react-router";
+import SignInPage from "./pages/SignInPage";
+import ChatAppPage from "./pages/ChatAppPage";
 import { Toaster } from "sonner";
-import ProtectedRoute from './components/ProtectedRoute.jsx';
-import { useThemeStore } from './stores/useThemeStore.js';
-import { useEffect } from 'react';
+import SignUpPage from "./pages/SignUpPage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { useThemeStore } from "./stores/useThemeStore";
+import { useEffect } from "react";
+import { useAuthStore } from "./stores/useAuthStore";
+import { useSocketStore } from "./stores/useSocketStore";
+
 function App() {
-  const {isDark, setTheme} = useThemeStore()
+  const { isDark, setTheme } = useThemeStore();
+  const { accessToken } = useAuthStore();
+  const { connectSocket, disconnectSocket } = useSocketStore();
+
   useEffect(() => {
-    setTheme(isDark)
-  }, [])
+    setTheme(isDark);
+  }, [isDark]);
+
+  useEffect(() => {
+    if (accessToken) {
+      connectSocket();
+    }
+
+    return () => disconnectSocket();
+  }, [accessToken]);
 
   return (
     <>
-      <Toaster richColors/>
+      <Toaster richColors />
       <BrowserRouter>
-      <Routes>
-        {/* public routes */}
-        <Route path="/signin" element={<SignInPage/>}/>
-        <Route path="/signup" element={<SignUpPage/>}/>
-        {/* protectect routes */}
-        <Route element={<ProtectedRoute/>} >
-          <Route path="/" element={<ChatAppPage/>}/>
-        </Route>
-      </Routes>
+        <Routes>
+          {/* public routes */}
+          <Route
+            path="/signin"
+            element={<SignInPage />}
+          />
+          <Route
+            path="/signup"
+            element={<SignUpPage />}
+          />
+
+          {/* protectect routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route
+              path="/"
+              element={<ChatAppPage />}
+            />
+          </Route>
+        </Routes>
       </BrowserRouter>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

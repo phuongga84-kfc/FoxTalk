@@ -9,9 +9,9 @@ import cors from 'cors'
 import friendRoute from "./routes/friendRoute.js";
 import messageRoute from "./routes/messageRoute.js";
 import conversationRoute from "./routes/conversationRoute.js";
+import {app, server} from "./socket/index.js"
 dotenv.config();
 
-const app = express();
 const PORT = process.env.PORT;
 const HOST = process.env.HOST;
 
@@ -31,7 +31,7 @@ app.use('/api/friends', friendRoute)
 app.use('/api/messages', messageRoute)
 app.use('/api/conversations', conversationRoute)
 connectDB().then(() => {
-  app.listen(PORT, HOST, () => {
+  server.listen(PORT, HOST, () => {
     console.log(`Server đang chạy tại http://${HOST}:${PORT}`);
   });
 });
