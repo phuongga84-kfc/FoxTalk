@@ -9,56 +9,101 @@ const api = axios.create({
   withCredentials: true,
 });
 
-api.interceptors.request.use((config) => {
-  const { accessToken } = useAuthStore.getState() ?? {};
+// ===================== REQUEST =====================
 
-  config.headers = config.headers ?? {};
+api.interceptors.request.use((config) => {
+  const { accessToken } = useAuthStore.getState();
 
   if (accessToken) {
+    config.headers = config.headers ?? {};
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
 
   return config;
 });
 
+// ===================== REFRESH =====================
+
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error, token = null) => {
+  failedQueue.forEach((promise) => {
+    if (error) {
+      promise.reject(error);
+    } else {
+      promise.resolve(token);
+    }
+  });
+
+  failedQueue = [];
+};
+
+// ===================== RESPONSE =====================
+
 api.interceptors.response.use(
-  (res) => res,
+  (response) => response,
+
   async (error) => {
     const originalRequest = error.config;
 
-    const requestUrl = (originalRequest?.url || "").toLowerCase();
+    if (!originalRequest) {
+      return Promise.reject(error);
+    }
 
+    const url = (originalRequest.url || "").toLowerCase();
+
+    // Không refresh các API auth
     if (
-      requestUrl.includes("/auth/signin") ||
-      requestUrl.includes("auth/signin") ||
-      requestUrl.includes("/auth/signup") ||
-      requestUrl.includes("auth/signup") ||
-      requestUrl.includes("/auth/refresh") ||
-      requestUrl.includes("auth/refresh")
+      url.includes("/auth/signin") ||
+      url.includes("/auth/signup") ||
+      url.includes("/auth/refresh")
     ) {
       return Promise.reject(error);
     }
 
-    originalRequest._retryCount = originalRequest._retryCount || 0;
+    const status = error.response?.status;
 
-    if (error.response?.status === 401 && originalRequest._retryCount < 4) {
-      originalRequest._retryCount += 1;
+    // Chỉ refresh khi access token hết hạn
+    if ((status === 401 || status === 403) && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      // Nếu đang refresh thì chờ
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        }).then((token) => {
+          originalRequest.headers.Authorization = `Bearer ${token}`;
+          return api(originalRequest);
+        });
+      }
+
+      isRefreshing = true;
+
       try {
-        const res = await api.post("/auth/refresh", {}, { withCredentials: true });
+        const res = await api.post("/auth/refresh");
+
         const newAccessToken = res.data.accessToken;
 
         useAuthStore.getState().setAccessToken(newAccessToken);
 
+        processQueue(null, newAccessToken);
+
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
         return api(originalRequest);
       } catch (refreshError) {
+        processQueue(refreshError, null);
+
         useAuthStore.getState().clearState();
+
         return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
       }
     }
 
     return Promise.reject(error);
-
   },
 );
 
