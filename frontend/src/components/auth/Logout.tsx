@@ -21,7 +21,7 @@ const Logout = () => {
       onClick={handleLogout}
     >
       <LogOut className="text-destructive" />
-      Log out
+      Đăng xuất
     </Button>
   );
 };

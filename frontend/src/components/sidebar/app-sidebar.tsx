@@ -15,7 +15,7 @@ import {
 import { Moon, Sun } from "lucide-react";
 import { Switch } from "../ui/switch";
 import CreateNewChat from "../chat/CreateNewChat";
-import NewGroupChatModal from "../chat/NewGroupChatModal";
+import NewGroupChatModal from "../chat/NewGroupChatmodal";
 import GroupChatList from "../chat/GroupChatList";
 import AddFriendModal from "../chat/AddFriendModal";
 import DirectMessageList from "../chat/DirectMessageList";
@@ -46,15 +46,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <a href="#">
                 <div className="flex w-full items-center px-2 justify-between">
                   <h1 className="text-xl font-bold text-white">FoxTalk</h1>
-                  <div className="flex items-center gap-2">
-                    <Sun className="size-4 text-white/80" />
-                    <Switch
-                      checked={isDark}
-                      onCheckedChange={toggleTheme}
-                      className="data-[state=checked]:bg-background/80"
-                    />
-                    <Moon className="size-4 text-white/80" />
-                  </div>
+                  
                 </div>
               </a>
             </SidebarMenuButton>

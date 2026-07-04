@@ -15,7 +15,7 @@ const ProfileCard = ({ user }: ProfileCardProps) => {
   if (!user) return;
 
   if (!user.bio) {
-    user.bio = "Lười code tiếp";
+    user.bio = "Chưa có bio";
   }
 
   const isOnline = onlineUsers.includes(user._id) ? true : false;
