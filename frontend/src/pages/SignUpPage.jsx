@@ -26,14 +26,15 @@ const SignUpPage = () => {
     const { signUp } = useAuthStore()
     const navigate = useNavigate()
     const onFinish = async (data) => {
-        const { firstName, lastName, username, email, password } = data
+        const { username, password, email, firstName, lastName } = data
 
-        const success = await signUp(firstName, lastName, username, email, password)
+        const success = await signUp(username, password, email, firstName, lastName)
 
         if (success) {
             navigate("/signin")
         }
     };
+
     return (
         <div className="signup">
 

@@ -24,7 +24,6 @@ export const useAuthStore = create(
         set({ accessToken: token });
       },
 
-      // ✅ thêm hàm này
       setUser: (user) => {
         set({ user });
       },
@@ -40,31 +39,23 @@ export const useAuthStore = create(
         useChatStore.getState().reset();
       },
 
-      signUp: async (
-        firstName,
-        lastName,
-        username,
-        email,
-        password
-      ) => {
+      signUp: async (username, password, email, firstName, lastName) => {
         try {
           set({ loading: true });
 
           await authService.signUp(
+            username,
+            password,
+            email,
             firstName,
             lastName,
-            username,
-            email,
-            password
           );
 
           toast.success("Tạo tài khoản thành công!");
           return true;
         } catch (error) {
           console.error(error);
-          toast.error(
-            getErrorMessage(error, "Tạo tài khoản thất bại")
-          );
+          toast.error(getErrorMessage(error, "Tạo tài khoản thất bại"));
           return false;
         } finally {
           set({ loading: false });
@@ -78,8 +69,10 @@ export const useAuthStore = create(
           localStorage.clear();
           useChatStore.getState().reset();
 
-          const { accessToken, message } =
-            await authService.signIn(username, password);
+          const { accessToken, message } = await authService.signIn(
+            username,
+            password,
+          );
 
           get().setAccessToken(accessToken);
 
@@ -93,9 +86,7 @@ export const useAuthStore = create(
         } catch (error) {
           console.error(error);
 
-          toast.error(
-            getErrorMessage(error, "Đăng nhập thất bại")
-          );
+          toast.error(getErrorMessage(error, "Đăng nhập thất bại"));
 
           return false;
         } finally {
@@ -116,10 +107,7 @@ export const useAuthStore = create(
           console.error(error);
 
           toast.error(
-            getErrorMessage(
-              error,
-              "Lỗi xảy ra khi đăng xuất, hãy thử lại."
-            )
+            getErrorMessage(error, "Lỗi xảy ra khi đăng xuất, hãy thử lại."),
           );
 
           return false;
@@ -142,10 +130,7 @@ export const useAuthStore = create(
           });
 
           toast.error(
-            getErrorMessage(
-              error,
-              "Lỗi xảy ra khi lấy dữ liệu người dùng."
-            )
+            getErrorMessage(error, "Lỗi xảy ra khi lấy dữ liệu người dùng."),
           );
         } finally {
           set({ loading: false });
@@ -171,8 +156,8 @@ export const useAuthStore = create(
           toast.error(
             getErrorMessage(
               error,
-              "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!"
-            )
+              "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!",
+            ),
           );
 
           get().clearState();
@@ -190,6 +175,6 @@ export const useAuthStore = create(
         accessToken: state.accessToken,
         user: state.user,
       }),
-    }
-  )
+    },
+  ),
 );
