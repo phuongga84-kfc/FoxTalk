@@ -5,17 +5,26 @@ import {
   updateConversationAfterCreateMessage,
 } from "../utils/messageHelper.js";
 import { io } from "../socket/index.js";
+import { uploadImageFromBuffer } from "../middlewares/uploadMiddleware.js";
 
 export const sendDirectMessage = async (req, res) => {
   try {
-    const { recipientId, content, conversationId } = req.body;
+    const {
+      recipientId,
+      content,
+      conversationId,
+      imageUrl,
+    } = req.body;
+
     const senderId = req.user._id;
 
-    let conversation;
-
-    if (!content) {
-      return res.status(400).json({ message: "Thiếu nội dung" });
+    if (!content && !imageUrl) {
+      return res.status(400).json({
+        message: "Tin nhắn trống",
+      });
     }
+
+    let conversation;
 
     if (conversationId) {
       conversation = await Conversation.findById(conversationId);
@@ -36,7 +45,8 @@ export const sendDirectMessage = async (req, res) => {
     const message = await Message.create({
       conversationId: conversation._id,
       senderId,
-      content,
+      content: content ?? "",
+      imageUrl: imageUrl ?? null,
     });
 
     updateConversationAfterCreateMessage(conversation, message, senderId);
@@ -48,34 +58,74 @@ export const sendDirectMessage = async (req, res) => {
     return res.status(201).json({ message });
   } catch (error) {
     console.error("Lỗi xảy ra khi gửi tin nhắn trực tiếp", error);
-    return res.status(500).json({ message: "Lỗi hệ thống" });
+
+    return res.status(500).json({
+      message: "Lỗi hệ thống",
+    });
   }
 };
 
 export const sendGroupMessage = async (req, res) => {
   try {
-    const { conversationId, content } = req.body;
+    const {
+      conversationId,
+      content,
+      imageUrl,
+    } = req.body;
+
     const senderId = req.user._id;
+
     const conversation = req.conversation;
 
-    if (!content) {
-      return res.status(400).json("Thiếu nội dung");
+    if (!content && !imageUrl) {
+      return res.status(400).json({
+        message: "Tin nhắn trống",
+      });
     }
 
     const message = await Message.create({
       conversationId,
       senderId,
-      content,
+      content: content ?? "",
+      imageUrl: imageUrl ?? null,
     });
 
     updateConversationAfterCreateMessage(conversation, message, senderId);
 
     await conversation.save();
+
     emitNewMessage(io, conversation, message);
 
     return res.status(201).json({ message });
   } catch (error) {
     console.error("Lỗi xảy ra khi gửi tin nhắn nhóm", error);
-    return res.status(500).json({ message: "Lỗi hệ thống" });
+
+    return res.status(500).json({
+      message: "Lỗi hệ thống",
+    });
+  }
+};
+
+export const uploadMessageImage = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        message: "Chưa chọn ảnh",
+      });
+    }
+
+    const result = await uploadImageFromBuffer(req.file.buffer, {
+      folder: "fox-talk/messages",
+    });
+
+    return res.status(200).json({
+      imageUrl: result.secure_url,
+    });
+  } catch (error) {
+    console.error("Upload ảnh thất bại", error);
+
+    return res.status(500).json({
+      message: "Upload ảnh thất bại",
+    });
   }
 };

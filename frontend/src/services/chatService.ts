@@ -14,24 +14,30 @@ export const chatService = {
     return res.data;
   },
 
-  async fetchMessages(id: string, cursor?: string): Promise<FetchMessageProps> {
+  async fetchMessages(
+    id: string,
+    cursor?: string
+  ): Promise<FetchMessageProps> {
     const res = await api.get(
-      `/conversations/${id}/messages?limit=${pageLimit}&cursor=${cursor}`
+      `/conversations/${id}/messages?limit=${pageLimit}&cursor=${cursor ?? ""}`
     );
 
-    return { messages: res.data.messages, cursor: res.data.nextCursor };
+    return {
+      messages: res.data.messages,
+      cursor: res.data.nextCursor,
+    };
   },
 
   async sendDirectMessage(
     recipientId: string,
     content: string = "",
-    imgUrl?: string,
+    imageUrl?: string,
     conversationId?: string
   ) {
     const res = await api.post("/messages/direct", {
       recipientId,
       content,
-      imgUrl,
+      imageUrl,
       conversationId,
     });
 
@@ -41,14 +47,28 @@ export const chatService = {
   async sendGroupMessage(
     conversationId: string,
     content: string = "",
-    imgUrl?: string
+    imageUrl?: string
   ) {
     const res = await api.post("/messages/group", {
       conversationId,
       content,
-      imgUrl,
+      imageUrl,
     });
+
     return res.data.message;
+  },
+
+  async uploadMessageImage(file: File) {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const res = await api.post("/messages/upload-image", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return res.data.imageUrl as string;
   },
 
   async markAsSeen(conversationId: string) {
@@ -61,7 +81,12 @@ export const chatService = {
     name: string,
     memberIds: string[]
   ) {
-    const res = await api.post("/conversations", { type, name, memberIds });
+    const res = await api.post("/conversations", {
+      type,
+      name,
+      memberIds,
+    });
+
     return res.data.conversation;
   },
 };
