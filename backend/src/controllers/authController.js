@@ -15,7 +15,6 @@ const REFRESH_TOKEN_TTL = 14 * 24 * 60 * 60 * 1000;
 export const signUp = async (req, res) => {
   try {
     const { firstName, lastName, username, email, password } = req.body;
-    console.log("BODY:", req.body);
 
     // validate input
     if (!username || !password || !email || !firstName || !lastName) {
